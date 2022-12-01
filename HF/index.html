@@ -1,0 +1,295 @@
+<!-- 
+Készítette:
+Bedő Kristóf
+TSSM2A
+2022
+
+PTE-MIK
+-->
+
+<html>
+<head>
+<title> 10.Tétel </title>
+</head>
+<body>
+
+<h1>10.	Tétel</h1>
+    
+<h2>Ismertesse a virtualizáció fogalmát és megoldásait. Ismertesse a felhő definícióját és típusait szolgáltatási szint és deployment szerint. Ismertesse, hogy milyen rendszerekre van szükség egy felhő kialakítása esetén.</h2>
+<br/>
+    
+<!-- --------- Virtualizácó kezdete --------- -->
+    
+<h3> Virtualizáció fogalma és megoldásai </h3>
+<p>
+Pontos fogalma ellentmondásos, mivel az adott gyártótól is függ, hogy mit értünk alatta. Általánosságban különböző módszerek, technikák arra, hogy egy virtuális „valamit” hozzunk létre. Az erőforrások elvonatkoztatása az erőforrást nyújtó elemektől. 
+<br/>Ez lehet:
+<ul>
+<li>Fizikai erőforrásokból logikai erőforrások képzés</li>
+<li>Logikai erőforrások függetlenítése a fizikaitól </li>
+<li>Korlátos erőforrások szétosztása </li>
+</ul>
+</p>
+
+<p>
+<b><br/>Platform virtualizáció</b>
+<br/>
+Saját kernel fut egy látszólag valódi fizikai hardware környezetben.
+</p>
+
+<p>
+<b><br/>Operációs rendszer szintű virtualizáció</b>
+<br/>
+Operáció rendszer felett alakítunk ki elkülönített környezetet
+<ul>
+<li>Jail vagy container</li>
+<li>Mindenki úgy érzékeli mintha csak ő futna</li>
+</ul>
+<br/>Interface kell az alkalmazások és a kernel közé
+<br/>
+</p>
+
+<p>
+<b><br/>Alkalmazás szintű virtualizáció</b>
+<br/>
+Konténer szintű virtualizáció egy speciális esete
+<br/>Egy-egy program becsomagolása
+<ul>
+<li>Nincs install, nem kell registry </li>
+</ul>
+</p>
+    
+<p>
+<b><br/>Desktop virtualizáció</b>
+<br/>
+A szolgáltatást nyújtó és igénybevevő eltávolítása egymástól
+<ul>
+<li>Szerver futtatja </li>
+<li>Vékony kliens jeleníti meg </li>
+</ul>
+</p>
+
+<p>
+<b><br/>Platform virtualizáció</b>
+<br/>
+Egy hardver, pl szerver, kezelése és koordinálása úgy, hogy több „vendég” operációs rendszer osztozhasson a hardware-n, anélkül hogy a „vendég” operációs rendszerek tudnák, hogy osztott környezetben futnak.
+</p>
+
+<h3><br/>Az alapproblémák megoldása alapján 3 típusra bonthatjuk a virtualizációt</h3>
+<p>
+<b>Alapprobléma:</b> A vendég operációs rendszert nem befolyásolhatja az, hogy a valódi hardver helyett virtuális környezetben fut. 
+<br/><br/>Ehhez két alapproblémát kell megoldani:
+<ul>
+<li>A futtatórendszernek a speciális (privilegizált) utasításokat el kell fognia és ki kell cserélnie a saját rendszerhívásaira. x86 architektúrán a privilegizált utasítások egy részére nem lehet hardveres elfogást beállítani.</li>
+<li>Az operációs rendszerek a virtuális memórialapok hatékony kezeléséhez hardveres támogatást (MMU) használnak, a virtuális gépek számára azonban egy indirekciós réteget kell beiktatni. </li>
+</ul>
+</p>
+    
+<p>
+<b><br/>Az alapproblémák megoldási módjai</b>
+<br/>
+<ul>
+<li>Emuláció</li>
+<li>Paravirtualizáció</li>
+<li>Natív virtualizáció</li>
+</ul>
+</p>
+    
+<p>
+<b><br/>Emuláció</b>
+<br/>
+Egy futtató rendszer (szoftver) vizsgálja és átalakítja a vendég operációs rendszer által végrehajtott utasításokat, viszont ezáltal általában kb ötször lassabb.
+<br/>
+Saját maga tart karban egy legfelső szintű laptáblát a memóriaelérések kezelésére.
+<br/>
+Ez a leglassúbb de legrugalmasabb megoldás (lehetővé teszi, hogy fizikai processzorétól eltérő utasításkészletet használjon a virtuális gép)
+<br/>
+
+Megvalósítható:
+<ul>
+<li>Futás közben interpretált módon</li>
+<li>Dinamikus újrafordítással (JIT: Just in Time) </li>
+</ul>
+</p>
+    
+<p>
+<b><br/>Paravirtualizáció</b>
+<br/>Egyértelműen tudja az operációs rendszer, hogy virtualizált rendszeren fut.
+<br/>A vendég operációs rendszert módosítjuk úgy, hogy a problémás utasítások helyett speciális rendszerhívásokat használjon, amelyek a hypervisor-t hívják meg.
+<br/>A vendég operációs rendszer CPU ütemezése kooperálhat a virtualizációs keretrendszer ütemezőjével.
+<br/>Gyors megoldás, de nem mindig használható (ha nem lehet a vendég operációs rendszert módosítani)
+<ul>
+<li>Linux: a legújabb kernel kiadások eleve beépítetten támogatják a paravirtualizációt</li>
+<li>Windows XP/2000: a kernel nem módosítható, ezért paravirtualizáció nem használható</li>
+</ul>
+</p>
+
+<p>
+<b><br/>Natív virtualizáció</b>
+<br/>A CPU utasításkészletének és üzemmódjainak olyan kiegészítése, amely lehetővé teszi a vendég operációs rendszer kódjának módosítás nélküli futtatását. Az újabb processzorok tartalmaznak ilyen kiegészítéseket (Intel VT-x, AMD-V).
+<ul>
+<li>Ring 0 alatti szinten futhat a kezelő szoftver</li>
+<li>Trap fogja el „problémás” utasításokat</li>
+</ul>
+</p>
+
+<h3>Memória virtualizáció</h3>
+<p>
+A virtuális memóriakezelést az MMU (Memory Management Unit) indítja, a virtuális címeket fizikai címekké alakítja.
+<br/><br/><b>Lapozás:</b>
+<ul>
+<li>0-64K a virtuális címek</li>
+<li>A gépnek csak 32K memóriája van</li>
+<li>Csak a szükséges részek töltődnek be</li>
+<li>4K a lapméret</li>
+<li>A valós rendszerekben a lapméret 512 byte, 1K, 4K (2 hatványa)</li>
+<li>Vannak lapok melyek nincsenek a fizikai memóriában </li>
+<li>Ha olyan címre hivatkozunk, mely egy be nem töltött lapon van, laphiba k
+<li>Jelölés: jelenlét/hiány bit</li>
+</ul>
+<b>Laphiba:</b>
+<ul>
+<li>Az MMU észleli a problémát és laphiba megszakítást generál az operációs rendszernek!</li>
+<li>Az operációs rendszer egy lapkeretet kiír a lemezre</li>
+<li>Betölti a kívánt lapot</li>
+<li>Módosítja a laptérképet a szükséges módon</li>
+<li>A megszakítást okozó utasítástól folytatja</li>
+</ul>
+</p>
+    
+<h3>További virtualizációk</h3>
+<p>
+Hardware virtualizáció
+<br/>I/O virtualizáció
+<br/>Hálózat virtualizáció
+<br/>Storage virtualizáció
+<br/>stb.
+</p>
+
+<!-- --------- Virtualizácó vége --------- -->		
+    
+<!-- ----------- Felhő kezdete ----------- -->
+    
+<h3><br/><br/><br/> Felhő definíciója és típusai szolgáltatási szint és deployment szerint </h3>
+<p>
+<br/><b>Definíciója:</b>
+<br/>A számítási felhő egy informatikai <u>modell</u>, melyben <u>általános</u> és kényelmes <u>hálózati hozzáférést</u> kapunk testre szabható, <u>megosztott</u> számítógépes <u>erőforráskészletekhez</u> (pl. hálózat, szerver, tárhely, alkalmazások, szolgáltatások). Az erőforrások foglalása gyors, egyszerű, és <u>minimális szolgáltatói interakciót</u> kíván.
+<br/><br/><b>5 fő jellemzője:</b>
+<ol>
+<li>Önkiszolgálás (on-demand self-service):</li>
+<ul>
+<li>Az erőforrásokat igény szerint foglalhatjuk és érhetjük el, s ehhez nincs szükség a szolgáltató közreműködésére</li>
+</ul>
+<li>Széleskörű hálózati elérés (broad network access):</li>
+<ul>
+<li>Otthonról, munkahelyről, mobiltelefonról, bárhonnan</li>
+</ul>
+<li>Megosztott erőforráskészlet (resource pooling):</li>
+<ul>
+<li>Az erőforrások bárki számára elérhetőek, s egyszerre többen használják őket.</li>
+<li>Olyan mint egy “kölcsönző”.</li>
+<li>A megrendelő nem tudja az erőforrás pontos fizikai helyét.</li>
+<li>Az erőforrásokat dinamikusan rendeljük a megrendelőkhöz.</li>
+</ul>
+<li>Nagyfokú rugalmasság (rapid elasticity)</li>
+<ul>
+<li>Új erőforrások igénybevételénél és nem használt erőforrások felszabadításánál is.</li>
+</ul>
+<li>Mért szolgáltatás (measured service)</li>
+<ul>
+<li>A számlázás mellett a szolgáltatás minőségének biztosításához is elengedhetetlen.
+</li>
+<li>Csak az igénybe vett szolgáltatások után kell fizetni.</li>
+</ul>
+</ol>
+</p>
+    
+<h3><br/>Szolgáltatási szintek</h3>
+<p><b>IaaS - Infrastructure-as-a-Service</b>
+<ul>
+<li>A megrendelő számára infrastruktúra komponenseket (kapacitást) biztosít:</li>
+<ul>
+<li>Szerver, tároló, hálózat, stb.</li>
+</ul>
+<li>A megrendelő saját operációs rendszert és alkalmazást futtathat</li>
+<li>Amazon Elastic Compute Cloud (EC2)</li>
+</ul>
+<br/><br/>
+<b>PaaS - Platform-as-a-Service</b>
+<ul>
+<li>Lehetőséget ad ready-made környezet használatára, amit szolgáltatásként használhatunk</li>
+<li>Megrendelő szabályozza:</li>
+<ul>
+<li>Az installált alkalmazásokat</li>
+<li>Az alkalmazások konfigurációs környezetét</li>
+</ul>
+<li>Fejlesztő környezetet ad és az alkalmazások futtatását is biztosítja</li>
+<ul>
+<li>pl.: Google App Engine</li>
+</ul>
+</ul>
+<br/><br/>
+<b>SaaS - Software-as-a-Service</b>
+<ul>
+<li>A szolgáltató alkalmazásait futtathatjuk Cloud infrastruktúrán</li>
+<li>A szoftver használat után számláznak</li>
+<li>Salesforce.com</li>
+<ul>
+<li>Customer Relation Management, CRM rendszer</li>
+</ul>
+<li>A szoftver web browser-en keresztül érhető el</li>
+<li>Előfizetéses licenszelés</li>
+<li>A szoftvert és a szolgáltatást a vendor monitorozza</li>
+<li>Minimális karbantartási költség</li>
+<li>Automatikus upgrade, update, patch menedzsment</li>
+<li>Alacsony belépési nehézségek</li>
+<li>Minden felhasználónál ugyanaz a verzió van</li>
+<li>Több felhasználó használhatja, adat megosztás</li>
+</ul>
+</p>
+    
+<h3><br/>Üzemeltetési (deployment) modellek</h3>
+<p>
+<ul>
+<li>Nyilvános felhő (public cloud)</li>
+<ul><li>Külső szolgáltató által üzemeltetett, szabadon elérhető szolgáltatás</li></ul>
+<li>Hibrid felhő (hybrid cloud)</li>
+<ul><li>Nyilvános felhő és lokális infrastruktúra keveréke</li></ul>
+<li>Privát felhő (private cloud)</li>
+<ul><li>Saját, belső felhasználású felhő infrastruktúra</li></ul>
+<li>Közösségi felhő (community cloud)</li>
+<ul><li>Zárt, több fél által megosztott felhő infrastruktúra</li></ul>
+</ul>
+</p>
+<br/><br/>
+<!-- ------------- Felhő vége ------------- -->	
+
+<!-- --------- Rendszerek kezdete --------- -->	
+
+<h3> Szükséges rendszerek egy felhő kialakításához </h3>
+<p>
+<ul>
+<ul>
+<li>Megfelelő hardver</li>
+<li>Hálózati infrastruktúra</li>
+<li>Áramellátás</li>
+<li>Tárhely</li>
+</ul>
+<li>A fentiek mindegyike szükséges a rendundáns működéshez.</li>
+<li>Magas rendelkezésre állás szükséges</li>
+<ul>
+<li>Egyszerűbb hardverek az alacsonyabb árak érdekében</li>
+<li>Magas redundancia biztosítja a rendelkezésre állást</li>
+</ul>
+<li>Service Level Agreement (SLA) </li>
+<ul>
+<li>A szolgáltató egyes szolgáltatások esetében garanciákat vállal rá, hogy a szolgáltatás egy adott időszakon (tipikusan egy éven) belül az idő adott hányadában elérhető lesz.</li>
+</ul>
+<li>Szolgáltatásaink elérhetősége a mi felelősségünk, több példányban, több szerverközpontban hosztolt szolgáltatás teljes kiesésének az esélye kisebb.</li>
+</ul>
+<br/>
+</p>
+
+<!-- ----------- Rendszerek vége ----------- -->				
+</body>
+</html>
